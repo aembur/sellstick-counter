@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "sellstick-counter",
+    "name": "SellStick Counter",
+    "description": "A mod that counts all SellStick uses in a container.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["aembr"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
