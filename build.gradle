@@ -5,7 +5,7 @@ plugins {
 
 
 group = 'com.aembr'
-version = '1.12.2-0.1'
+version = '1.12.2-0.1.1'
 
 java {
     archivesBaseName = 'sellstick-counter'

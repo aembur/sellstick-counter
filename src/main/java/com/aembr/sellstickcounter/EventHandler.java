@@ -35,8 +35,11 @@ public class EventHandler {
 
                 for (int i = 0; i < slots; i++) {
                     ItemStack itemStack = itemStackList.get(i);
-                    Item item = itemStack.getItem();
-                    if (item.getUnlocalizedNameInefficiently(itemStack).equals("item.stick")) {
+                    if (itemStack.getItem().getUnlocalizedNameInefficiently(itemStack).equals("item.stick")) {
+                        if (!(itemStack.hasTagCompound())) {
+                            continue;
+                        }
+
                         NBTTagList lore = itemStack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
                         for (int j = 0; j < lore.tagCount(); j++) {
                             String line = lore.getStringTagAt(j);
