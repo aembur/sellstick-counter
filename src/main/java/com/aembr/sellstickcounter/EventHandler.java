@@ -27,32 +27,51 @@ public class EventHandler {
     public void keyboardEvent(GuiScreenEvent.KeyboardInputEvent.Post event) {
         GuiScreen screen = event.getGui();
         if (isValidGui(screen)) {
+            if (!(Keyboard.getEventKey() == SellstickCounter.countKey || Keyboard.getEventKey() == SellstickCounter.countRunningTotalKey)) {
+                return;
+            }
+
+            int uses;
+            GuiContainer c = (GuiContainer) screen;
+
             if (Keyboard.getEventKey() == SellstickCounter.countKey && Keyboard.getEventKeyState()) {
-                GuiContainer c = (GuiContainer) screen;
-                int slots = getContainerSlotSize(c);
-                NonNullList<ItemStack> itemStackList = c.inventorySlots.getInventory();
-                int totalUses = 0;
+                uses = doCount(c);
+                SellstickCounter.runningTotal = 0;
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(String.format("%s uses", uses)));
+            }
 
-                for (int i = 0; i < slots; i++) {
-                    ItemStack itemStack = itemStackList.get(i);
-                    if (itemStack.getItem().getUnlocalizedNameInefficiently(itemStack).equals("item.stick")) {
-                        if (!(itemStack.hasTagCompound())) {
-                            continue;
-                        }
-
-                        NBTTagList lore = itemStack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-                        for (int j = 0; j < lore.tagCount(); j++) {
-                            String line = lore.getStringTagAt(j);
-                            Matcher matcher = SellstickCounter.searchPattern.matcher(line);
-                            if (matcher.matches()) {
-                                totalUses += Integer.parseInt(matcher.group(1));
-                            }
-                        }
-                    }
-                }
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(String.format("%s uses", totalUses)));
+            else if (Keyboard.getEventKey() == SellstickCounter.countRunningTotalKey && Keyboard.getEventKeyState()) {
+                uses = doCount(c);
+                SellstickCounter.runningTotal += uses;
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(String.format("%s uses (+%s)", SellstickCounter.runningTotal, uses)));
             }
         }
+    }
+
+    public int doCount(GuiContainer container) {
+        int uses = 0;
+
+        int slots = getContainerSlotSize(container);
+        NonNullList<ItemStack> itemStackList = container.inventorySlots.getInventory();
+
+        for (int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemStackList.get(i);
+            if (itemStack.getItem().getUnlocalizedNameInefficiently(itemStack).equals("item.stick")) {
+                if (!(itemStack.hasTagCompound())) {
+                    continue;
+                }
+
+                NBTTagList lore = itemStack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
+                for (int j = 0; j < lore.tagCount(); j++) {
+                    String line = lore.getStringTagAt(j);
+                    Matcher matcher = SellstickCounter.searchPattern.matcher(line);
+                    if (matcher.matches()) {
+                        uses += Integer.parseInt(matcher.group(1));
+                    }
+                }
+            }
+        }
+        return uses;
     }
 
     private Boolean isValidGui(GuiScreen screen) {
