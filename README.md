@@ -7,4 +7,5 @@
 3. Put the file in your `.minecraft/mods` folder
 
 ## Usage
-Open a chest or inventory and press **P**. That's it.
+Open a chest or inventory and press **C**. That's it.
+If you're counting multiple containers and want to keep track of the running total, use **V** instead and reset running total with **C**.
